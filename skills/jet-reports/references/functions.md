@@ -8,7 +8,7 @@
 
 | What | Purpose |
 |------|---------|
-| `"Rows"` | one Excel row per record (replicator) – `"Rows=3"` = 3 rows per record |
+| `"Rows"` | one Excel row per **distinct value** of Field (empty Field = per record, returns keys); `"IncludeDuplicates=","True"` keeps duplicates; `"Rows=3"` = 3 rows per value |
 | `"First"` / `"Last"` | first/last record; empty Field → record key for `NF` |
 | `"Sum"` | sum of a field |
 | `"Count"` / `"CountUnique"` | count / distinct count |

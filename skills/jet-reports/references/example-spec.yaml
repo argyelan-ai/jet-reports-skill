@@ -36,3 +36,7 @@ sheets:
         - {header: Unit, formula: 'NF([[Key]],"8 Base Unit of Measure")'}
         - {header: Inventory, formula: 'NF([[Key]],"68 Inventory")', format: int}
         - {header: Inventory value, formula: '[[Inventory]]*NF([[Key]],"22 Unit Cost")', format: dec}
+# Further building blocks (see SKILL.md "Recipes"):
+#   computed: [{name: Period, title: Date filter, formula: 'NP("DateFilter",From,To)'}]   -> defined name on the options sheet
+#   tables:   [...]                     several tables on one sheet
+#   static_rows: 20                     fixed block (e.g. Top-N), {n} = 1..20, no replicator needed

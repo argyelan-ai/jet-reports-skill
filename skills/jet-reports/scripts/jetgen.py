@@ -164,24 +164,35 @@ def check(spec, profile=None):
     """Return a list of error strings (empty = OK)."""
     prof = merge_profile(profile)
     errors = []
-    names = {o["name"] for o in spec.get("options", [])} | set(spec.get("names", {}))
+    names = ({o["name"] for o in spec.get("options", [])} | {c["name"] for c in spec.get("computed", [])}
+             | set(spec.get("names", {})))
     for o in spec.get("options", []):
         if o.get("lookup"):
             errors += _check_formula(o["lookup"], f"option {o['name']}/lookup", names, None, prof)
+    for c in spec.get("computed", []):
+        errors += _check_formula(c["formula"], f"computed {c['name']}", names, None, prof)
     for s in spec.get("sheets", []):
-        plan = _column_plan(s["table"]) if s.get("table") else None
+        tables = _tables(s)
+        plan = _column_plan(tables[0]) if tables else None
         for c in s.get("cells", []):
             if c.get("formula"):
                 errors += _check_formula(c["formula"], f"{s['name']}!{c['cell']}", names, plan, prof)
-        if s.get("table"):
-            t = s["table"]
+        for t in tables:
+            tplan = _column_plan(t)
             for col in t["columns"]:
-                errors += _check_formula(col["formula"], f"{s['name']}/{col['header']}", names, plan, prof)
+                errors += _check_formula(col["formula"].replace("{n}", "1"), f"{s['name']}/{col['header']}",
+                                         names, tplan, prof)
             if t.get("hide_row_if"):
-                errors += _check_formula(t["hide_row_if"], f"{s['name']}/hide_row_if", names, plan, prof)
-            if not _is_jet(t["columns"][0]["formula"]):
-                errors.append(f"{s['name']}: first table column must be the NL(\"Rows\",...) replicator")
+                errors += _check_formula(t["hide_row_if"], f"{s['name']}/hide_row_if", names, tplan, prof)
+            if not t.get("static_rows") and not _is_jet(t["columns"][0]["formula"]):
+                errors.append(f"{s['name']}: first table column must be the NL(\"Rows\",...) replicator "
+                              f"(or set static_rows: N for a fixed block)")
     return errors
+
+
+def _tables(sheet):
+    """'table' (one) or 'tables' (several) of a sheet."""
+    return ([sheet["table"]] if sheet.get("table") else []) + list(sheet.get("tables", []))
 
 
 # ---------------------------------------------------------------- build
@@ -226,6 +237,13 @@ def build(spec, out, profile=None):
             opt[f"F{i}"] = o["tooltip"]
         sheet_ref = opt.title if re.fullmatch(r"\w+", opt.title) else f"'{opt.title}'"
         wb.defined_names[o["name"]] = DefinedName(o["name"], attr_text=f"{sheet_ref}!$D${i}")
+    # computed values (e.g. a date filter built from two options): below the options, no "Option" tag
+    first = len(spec.get("options", [])) + 4
+    for i, c in enumerate(spec.get("computed", []), start=first):
+        opt[f"C{i}"] = c.get("title", c["name"])
+        _put(opt, f"D{i}", "=" + c["formula"], c.get("format"), prof)
+        sheet_ref = opt.title if re.fullmatch(r"\w+", opt.title) else f"'{opt.title}'"
+        wb.defined_names[c["name"]] = DefinedName(c["name"], attr_text=f"{sheet_ref}!$D${i}")
     for n, target in spec.get("names", {}).items():
         wb.defined_names[n] = DefinedName(n, attr_text=target)
     for col, w in zip("ABCDEF", [4, 2, 28, 24, 30, 50]):
@@ -238,26 +256,30 @@ def build(spec, out, profile=None):
         if s.get("title"):
             _put(ws, "B3", s["title"], None, prof)
             ws["B3"].font = Font(bold=True, size=14, color=prof["header_color"])
-        t = s.get("table")
-        plan = _column_plan(t) if t else {}
         for c in s.get("cells", []):
             content = c.get("value") if "value" in c else "=" + c["formula"]
             _put(ws, c["cell"], content, c.get("format"), prof)
-        if t:
+        for k, t in enumerate(_tables(s)):
+            plan = _column_plan(t)
             hr = t.get("header_row", 6)
-            dr = hr + 1
+            n_rows = t.get("static_rows") or 1
             for col in t["columns"]:
                 letter = plan[col["header"]]
                 ws[f"{letter}{hr}"] = col["header"]
                 _header_style(ws[f"{letter}{hr}"], prof)
-                _put(ws, f"{letter}{dr}", "=" + _fill_placeholders(col["formula"], plan, dr), col.get("format"), prof)
                 ws.column_dimensions[letter].width = col.get("width", 16)
                 if col.get("hide"):
                     ws[f"{letter}1"] = kw["hide"]
+                for n in range(1, n_rows + 1):
+                    r = hr + n
+                    f = _fill_placeholders(col["formula"].replace("{n}", str(n)), plan, r)
+                    _put(ws, f"{letter}{r}", "=" + f, col.get("format"), prof)
             if t.get("hide_row_if"):
-                cond = _fill_placeholders(t["hide_row_if"], plan, dr)
-                _put(ws, f"A{dr}", f'=IF({cond},"{kw["hide"]}","{kw["show"]}")', None, prof)
-            ws.freeze_panes = f"A{dr}"
+                for n in range(1, n_rows + 1):
+                    cond = _fill_placeholders(t["hide_row_if"], plan, hr + n)
+                    _put(ws, f"A{hr + n}", f'=IF({cond},"{kw["hide"]}","{kw["show"]}")', None, prof)
+            if k == 0 and not t.get("static_rows"):
+                ws.freeze_panes = f"A{hr + 1}"
 
     # version sheet
     v = wb.create_sheet(prof["version_sheet"])

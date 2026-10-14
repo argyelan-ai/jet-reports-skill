@@ -37,6 +37,33 @@ Excel 365 stores Jet functions as dynamic-array XLL calls, and `jetgen` reproduc
 | Company | in **every** NL; one company per NL |
 | Mode | `design` (formulas kept) by default; `values` only for distribution |
 
+## Recipes
+
+**Period as option** – two date options plus a computed filter, used as `Period` in NL filters:
+```yaml
+options:  [{name: From, title: Posting date from, value: 2026-01-01, format: date},
+           {name: To,   title: Posting date to,   value: 2026-09-30, format: date}]
+computed: [{name: Period, title: Date filter, formula: 'NP("DateFilter",From,To)'}]
+```
+
+**Top-N** – sheet `Data` replicates all rows with an amount column and a hidden sort column
+(`[[Amount]]-ROW()/1E9` breaks ties); sheet `Top` is a fixed block (`static_rows: 20`, `{n}` = 1…20):
+```yaml
+- name: Top
+  table:
+    static_rows: 20
+    columns:
+      - {header: Rank, formula: '{n}'}
+      - {header: Row, hide: true, formula: 'IFERROR(MATCH(LARGE(Data!$H:$H,[[Rank]]),Data!$H:$H,0),"")'}
+      - {header: Customer, formula: 'IF([[Row]]="","",INDEX(Data!$C:$C,[[Row]]))'}
+```
+
+**Self-check** – put a control cell next to every replicated total: sum of rows minus the total from
+one separate `NL("Sum",…)` with the same filters must be 0. Tell the user to check it after the run.
+
+**No access to the data?** Build anyway, list every unverified field/filter value for the user to
+confirm in Jet's field list, and leave the tie-out as an explicit open item.
+
 ## Common mistakes
 - Hard-coding company/period in report cells instead of options.
 - Sorting/Top-N on a FlowField with a date FlowFilter – unverified; prefer summing per row and ranking in Excel.

@@ -110,6 +110,30 @@ def test_check_finds_errors(formula, msg, profile):
     assert any(msg in e for e in errs), errs
 
 
+def test_computed_option_and_static_top_n_block(tmp_path):
+    s = spec()
+    s["options"] += [{"name": "From", "value": "2026-01-01"}, {"name": "To", "value": "2026-09-30"}]
+    s["computed"] = [{"name": "Period", "title": "Period filter", "formula": 'NP("DateFilter",From,To)'}]
+    s["sheets"][0]["table"]["columns"][0]["formula"] = (
+        'NL("Rows","27 Item","1 No.","Company=",Company,"Limit=",MaxRows,"3 Posting Date",Period)')
+    s["sheets"].append({"name": "Top", "table": {
+        "header_row": 4, "start_column": "B", "static_rows": 3,
+        "columns": [
+            {"header": "Rank", "formula": "{n}"},
+            {"header": "Row", "hide": True, "formula": "IFERROR(MATCH(LARGE(Report!$F:$F,[[Rank]]),Report!$F:$F,0),\"\")"},
+            {"header": "Item", "formula": 'IF([[Row]]="","",INDEX(Report!$C:$C,[[Row]]))'},
+        ]}})
+    assert jetgen.check(s) == []
+    wb = openpyxl.load_workbook(jetgen.build(s, tmp_path / "t.xlsx"))
+    o = wb["Options"]
+    assert o["C8"].value == "Period filter" and o["A8"].value is None
+    assert wb.defined_names["Period"].attr_text == "Options!$D$8"
+    t = wb["Top"]
+    assert [t[f"B{r}"].value for r in (5, 6, 7)] == ["=1", "=2", "=3"]
+    assert t["D7"].value == '=IF($C7="","",INDEX(Report!$C:$C,$C7))'
+    assert t["C1"].value == "Hide"
+
+
 def test_check_clean():
     assert jetgen.check(spec()) == []
 
