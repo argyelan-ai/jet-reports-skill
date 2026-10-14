@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="0.55" stop-color="#132a3e"/>
+      <stop offset="1" stop-color="#0b3d36"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0.18" cy="0.2" r="0.5">
+      <stop offset="0" stop-color="#d97757" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#d97757" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.85" cy="0.85" r="0.55">
+      <stop offset="0" stop-color="#21a366" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#21a366" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#ffffff" stroke-opacity="0.04"/>
+    </pattern>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="640" fill="url(#grid)"/>
+  <rect width="1280" height="640" fill="url(#glowA)"/>
+  <rect width="1280" height="640" fill="url(#glowB)"/>
+
+  <!-- Titel -->
+  <text x="80" y="118" font-size="64" font-weight="700" fill="#f8fafc" letter-spacing="-1">jet-reports</text>
+  <text x="80" y="164" font-size="26" fill="#cbd5e1">Describe the report. Claude writes the Jet workbook.</text>
+  <g font-size="16" font-weight="600">
+    <rect x="80" y="190" width="150" height="32" rx="16" fill="#d97757" fill-opacity="0.18" stroke="#d97757" stroke-opacity="0.6"/>
+    <text x="155" y="211" text-anchor="middle" fill="#f4b49c">Claude Code skill</text>
+    <rect x="242" y="190" width="132" height="32" rx="16" fill="#21a366" fill-opacity="0.18" stroke="#21a366" stroke-opacity="0.6"/>
+    <text x="308" y="211" text-anchor="middle" fill="#8fe0b5">Excel · .xlsx</text>
+    <rect x="386" y="190" width="200" height="32" rx="16" fill="#38bdf8" fill-opacity="0.14" stroke="#38bdf8" stroke-opacity="0.55"/>
+    <text x="486" y="211" text-anchor="middle" fill="#a5dcf5">NAV / Business Central</text>
+  </g>
+
+  <!-- Karte 1: Terminal -->
+  <g filter="url(#shadow)">
+    <rect x="80" y="270" width="330" height="290" rx="14" fill="#0b1220" stroke="#334155"/>
+    <rect x="80" y="270" width="330" height="40" rx="14" fill="#1e293b"/>
+    <rect x="80" y="296" width="330" height="14" fill="#1e293b"/>
+    <circle cx="104" cy="290" r="6" fill="#f87171"/><circle cx="124" cy="290" r="6" fill="#fbbf24"/><circle cx="144" cy="290" r="6" fill="#34d399"/>
+    <text x="245" y="295" text-anchor="middle" font-size="14" fill="#94a3b8">claude</text>
+    <g font-family="Consolas, 'Cascadia Code', Menlo, monospace" font-size="15">
+      <text x="100" y="342" fill="#d97757">✻</text>
+      <text x="122" y="342" fill="#e2e8f0">Build a Jet report:</text>
+      <text x="122" y="364" fill="#e2e8f0">top customers by sales,</text>
+      <text x="122" y="386" fill="#e2e8f0">period as option</text>
+      <text x="100" y="424" fill="#34d399">●</text>
+      <text x="122" y="424" fill="#94a3b8">writing spec.yaml</text>
+      <text x="100" y="448" fill="#34d399">●</text>
+      <text x="122" y="448" fill="#94a3b8">jetgen --check  OK</text>
+      <text x="100" y="472" fill="#34d399">●</text>
+      <text x="122" y="472" fill="#94a3b8">JR_TopCustomers.xlsx</text>
+      <text x="100" y="516" fill="#64748b">&gt;</text>
+      <rect x="118" y="503" width="9" height="17" fill="#e2e8f0" opacity="0.8"/>
+    </g>
+  </g>
+
+  <path d="M422 415 H468" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow)"/>
+
+  <!-- Karte 2: Spec -->
+  <g filter="url(#shadow)">
+    <rect x="480" y="270" width="270" height="290" rx="14" fill="#111827" stroke="#334155"/>
+    <text x="500" y="302" font-size="14" fill="#94a3b8" font-weight="600">spec.yaml</text>
+    <g font-family="Consolas, 'Cascadia Code', Menlo, monospace" font-size="14">
+      <text x="500" y="338"><tspan fill="#7dd3fc">options</tspan><tspan fill="#e2e8f0">:</tspan></text>
+      <text x="516" y="360"><tspan fill="#e2e8f0">- </tspan><tspan fill="#7dd3fc">name</tspan><tspan fill="#e2e8f0">: Company</tspan></text>
+      <text x="516" y="382"><tspan fill="#e2e8f0">- </tspan><tspan fill="#7dd3fc">name</tspan><tspan fill="#e2e8f0">: Period</tspan></text>
+      <text x="500" y="414"><tspan fill="#7dd3fc">table</tspan><tspan fill="#e2e8f0">:</tspan></text>
+      <text x="516" y="436"><tspan fill="#7dd3fc">columns</tspan><tspan fill="#e2e8f0">:</tspan></text>
+      <text x="532" y="458"><tspan fill="#e2e8f0">- </tspan><tspan fill="#fcd34d">No.</tspan></text>
+      <text x="532" y="480"><tspan fill="#e2e8f0">- </tspan><tspan fill="#fcd34d">Name</tspan></text>
+      <text x="532" y="502"><tspan fill="#e2e8f0">- </tspan><tspan fill="#fcd34d">Sales</tspan></text>
+      <text x="500" y="536" fill="#64748b"># checked before build</text>
+    </g>
+  </g>
+
+  <path d="M762 415 H808" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 6" marker-end="url(#arrow)"/>
+
+  <!-- Karte 3: Workbook -->
+  <g filter="url(#shadow)">
+    <rect x="820" y="230" width="380" height="370" rx="14" fill="#f8fafc"/>
+    <rect x="820" y="230" width="380" height="44" rx="14" fill="#107c41"/>
+    <rect x="820" y="258" width="380" height="16" fill="#107c41"/>
+    <rect x="838" y="242" width="22" height="22" rx="4" fill="#ffffff" fill-opacity="0.2"/>
+    <text x="849" y="258" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">X</text>
+    <text x="872" y="258" font-size="15" font-weight="600" fill="#ffffff">JR_TopCustomers.xlsx</text>
+    <!-- Formelzeile -->
+    <rect x="836" y="286" width="348" height="30" rx="4" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="846" y="306" font-size="14" font-style="italic" fill="#64748b">fx</text>
+    <text x="870" y="306" font-family="Consolas, 'Cascadia Code', Menlo, monospace" font-size="13"><tspan fill="#107c41">=NL</tspan><tspan fill="#334155">("Rows","18 Customer",…)</tspan></text>
+    <!-- Tabelle -->
+    <g font-size="13">
+      <rect x="836" y="328" width="348" height="30" fill="#0b3d36"/>
+      <text x="848" y="348" fill="#ffffff" font-weight="600">No.</text>
+      <text x="920" y="348" fill="#ffffff" font-weight="600">Name</text>
+      <text x="1172" y="348" fill="#ffffff" font-weight="600" text-anchor="end">Sales</text>
+      <g fill="#334155">
+        <rect x="836" y="358" width="348" height="30" fill="#ffffff"/>
+        <text x="848" y="378">C10000</text><text x="920" y="378">Adatum Corp.</text><text x="1172" y="378" text-anchor="end">1,204,880</text>
+        <rect x="836" y="388" width="348" height="30" fill="#f1f5f9"/>
+        <text x="848" y="408">C20000</text><text x="920" y="408">Trey Research</text><text x="1172" y="408" text-anchor="end">986,215</text>
+        <rect x="836" y="418" width="348" height="30" fill="#ffffff"/>
+        <text x="848" y="438">C30000</text><text x="920" y="438">School of Fine Art</text><text x="1172" y="438" text-anchor="end">743,902</text>
+        <rect x="836" y="448" width="348" height="30" fill="#f1f5f9"/>
+        <text x="848" y="468">C40000</text><text x="920" y="468">Alpine Ski House</text><text x="1172" y="468" text-anchor="end">512,377</text>
+        <rect x="836" y="478" width="348" height="30" fill="#ffffff"/>
+        <text x="848" y="498">C50000</text><text x="920" y="498">Relecloud</text><text x="1172" y="498" text-anchor="end">398,640</text>
+      </g>
+      <line x1="908" y1="328" x2="908" y2="508" stroke="#e2e8f0"/>
+      <line x1="1060" y1="358" x2="1060" y2="508" stroke="#e2e8f0"/>
+    </g>
+    <!-- Tabs -->
+    <g font-size="12">
+      <rect x="836" y="526" width="74" height="26" rx="4" fill="#e2e8f0"/><text x="873" y="543" text-anchor="middle" fill="#475569">Options</text>
+      <rect x="916" y="526" width="74" height="26" rx="4" fill="#107c41"/><text x="953" y="543" text-anchor="middle" fill="#ffffff" font-weight="600">Report</text>
+      <rect x="996" y="526" width="74" height="26" rx="4" fill="#e2e8f0"/><text x="1033" y="543" text-anchor="middle" fill="#475569">Version</text>
+    </g>
+    <text x="836" y="582" font-size="13" fill="#64748b">Jet → Run Report  ·  verified with Jet 23.4</text>
+  </g>
+</svg>
