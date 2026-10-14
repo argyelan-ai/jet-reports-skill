@@ -1,0 +1,38 @@
+# Example spec for jetgen.py - item list with inventory
+# Formulas: Excel English with commas, Jet functions WITHOUT _xll. (jetgen adds it),
+# [[Header]] = cell of that column in the same row.
+title: Item list with inventory
+mode: design              # design = keep formulas | values = results as values (for distribution)
+version:
+  - {date: 2026-10-14, requested_by: Controlling, changed_by: Claude, description: Initial version, version: 1}
+options:                   # -> options sheet + one defined name per option
+  - name: Company
+    title: Company
+    value: CRONUS International Ltd.
+    lookup: 'NL("Lookup","2000000006 Company","1 Name")'
+    tooltip: Company to report on
+  - name: ItemCat
+    title: Item category
+    value: "*"
+    tooltip: "* = all"
+  - name: MaxRows
+    title: Max. number of items
+    value: 500
+names: {}                  # extra defined names, e.g. {Holidays: "Holidays!$A$2:$A$200"}
+sheets:
+  - name: Report
+    title: '="Item list - "&Company'
+    cells:
+      - {cell: B4, value: "Items total:"}
+      - {cell: D4, formula: 'NL("Count","27 Item","1 No.","Company=",Company,"5702 Item Category Code",ItemCat)', format: int}
+    table:
+      header_row: 6
+      start_column: C
+      hide_row_if: '[[Inventory]]<=0'          # optional -> column A: =IF(...,"Hide","Show")
+      columns:                                  # first column = NL("Rows",...) replicator
+        - {header: No., formula: 'NL("Rows","27 Item","1 No.","Company=",Company,"5702 Item Category Code",ItemCat,"Limit=",MaxRows)', width: 16}
+        - {header: Key, hide: true, formula: 'NL("First","27 Item",,"Company=",Company,"1 No.","@@"&[[No.]])'}
+        - {header: Description, formula: 'NF([[Key]],"3 Description")', width: 40}
+        - {header: Unit, formula: 'NF([[Key]],"8 Base Unit of Measure")'}
+        - {header: Inventory, formula: 'NF([[Key]],"68 Inventory")', format: int}
+        - {header: Inventory value, formula: '[[Inventory]]*NF([[Key]],"22 Unit Cost")', format: dec}

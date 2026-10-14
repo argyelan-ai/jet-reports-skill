@@ -1,0 +1,17 @@
+# Example profile for a German Jet UI (pass with --profile). Omitted keys use the English defaults.
+keywords:
+  auto: Auto+Ausblenden
+  values: +Werte
+  hide_sheet: +HideSheet
+  hide: Hide
+  show: Show
+  option: Option
+options_sheet: Optionen
+option_tags: [Titel, Wert, Lookup, Tooltip]
+version_headers: [Datum, Anfrage von, Geändert von, Beschreibung, Version]
+company_key: Mandant=
+company_keys_accepted: [Mandant=, Company=]
+require_table_numbers: true          # tables/fields as "27 Artikel" / "1 Nr."
+header_color: "1F4E79"
+localized_function_names: [WENN, SUMME, UND, ODER, NICHT, SVERWEIS, WENNFEHLER, HEUTE, DATUM, RUNDEN]
+# function_literals: "\\\t;\t;\t{\t}\t[@[{0}]]\t1031\t2055"   # docProps value written by a de-DE/de-CH Jet (optional)
