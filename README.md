@@ -42,7 +42,7 @@ You:    open in Excel → Jet → Run Report
 ## Quick start
 
 ```bash
-git clone https://github.com/<you>/jet-reports-skill
+git clone https://github.com/argyelan-ai/jet-reports-skill
 cp -r jet-reports-skill/skills/jet-reports ~/.claude/skills/
 pip install openpyxl pyyaml
 ```
